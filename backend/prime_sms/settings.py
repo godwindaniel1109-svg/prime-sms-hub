@@ -71,12 +71,30 @@ WSGI_APPLICATION = 'prime_sms.wsgi.application'
 ASGI_APPLICATION = 'prime_sms.asgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# Use PostgreSQL if DATABASE_URL is set (for Vercel/production), otherwise SQLite (for local dev)
+DATABASE_URL = env('DATABASE_URL', default=None)
+if DATABASE_URL:
+    # Parse DATABASE_URL (format: postgresql://user:password@host:port/dbname)
+    import urllib.parse
+    result = urllib.parse.urlparse(DATABASE_URL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': result.path[1:],  # Remove leading '/'
+            'USER': result.username,
+            'PASSWORD': result.password,
+            'HOST': result.hostname,
+            'PORT': result.port or '5432',
+        }
     }
-}
+else:
+    # Fallback to SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
