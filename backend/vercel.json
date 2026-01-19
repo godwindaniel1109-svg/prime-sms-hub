@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/manage.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/api/$1"
+    },
+    {
+      "src": "/admin",
+      "dest": "backend/admin"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "backend/media/$1"
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "backend/static/$1"
+    }
+  ]
+}
