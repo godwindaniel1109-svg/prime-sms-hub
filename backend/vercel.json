@@ -2,26 +2,21 @@
   "version": 2,
   "builds": [
     {
-      "src": "backend/manage.py",
+      "src": "api/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/api/$1"
+      "dest": "api/wsgi.py"
     },
     {
-      "src": "/admin",
-      "dest": "backend/admin"
-    },
-    {
-      "src": "/media/(.*)",
-      "dest": "backend/media/$1"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "backend/static/$1"
+      "src": "/(.*)",
+      "dest": "api/wsgi.py"
     }
-  ]
+  ],
+  "env": {
+    "PYTHON_VERSION": "3.11"
+  }
 }
