@@ -2,6 +2,19 @@
 // FIREBASE CONFIGURATION
 // ========================================
 
+// Hide Firebase internal errors from users - wrap console.error
+const originalError = console.error;
+console.error = function(...args) {
+    const msg = args[0]?.toString() || '';
+    // Hide Firebase/internal errors from users, but log for debugging
+    if (msg.includes('Firebase') || msg.includes('firestore') || msg.includes('auth')) {
+        // Log to browser console for dev, but don't show in UI
+        originalError.apply(console, ['[Internal]', ...args]);
+    } else {
+        originalError.apply(console, args);
+    }
+};
+
 // Load Firebase SDKs and initialize safely
 (function(){
     const libs = [
